@@ -1,16 +1,25 @@
+const { KnexTimeoutError } = require("knex");
 const knex = require("../db/connection");
 
-const create = (newReservation) =>
-  knex("reservations").insert(newReservation).returning("*");
-
-const list = (reservationDate) =>
-  knex("reservations")
+function list() {
+  return knex("reservations")
     .select("*")
-    .where({ reservation_date: reservationDate })
+    .whereNot({ status: "finished" })
+    .andWhereNot({ status: "cancelled" })
     .orderBy("reservation_time");
+}
 
+function create(newReservation) {
+  return knex("reservations")
+    .insert({
+      ...newReservation,
+      status: "booked",
+    })
+    .returning("*")
+    .then((result) => result[0]);
+}
 
 module.exports = {
-  create,
   list,
+  create,
 };

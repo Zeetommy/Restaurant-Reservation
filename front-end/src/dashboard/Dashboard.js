@@ -1,38 +1,109 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
+import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
+import { useLocation, useHistory } from "react-router-dom";
 
-/**
- * Defines the dashboard page.
- * @param date
- *  the date for which the user wants to view reservations.
- * @returns {JSX.Element}
- */
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const [currentDate, setCurrentDate] = useState(date);
 
-  useEffect(loadDashboard, [date]);
+  const [error, setError] = useState(null);
 
-  function loadDashboard() {
+  const history = useHistory();
+
+ 
+  
+  // useEffect's to load reservations and tables
+
+  useEffect(() => {
     const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    return () => abortController.abort();
-  }
 
-  return (
-    <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
+    async function loadReservations() {
+      try {
+        if (currentDate === date) {
+          const returnedReservations = await listReservations(
+            { date },
+            abortController.signal
+          );
+          setReservations(returnedReservations);
+        } else {
+          const returnedReservations = await listReservations(
+            { currentDate },
+            abortController.signal
+          );
+          setReservations(returnedReservations);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    }
+    loadReservations();
+    return () => abortController.abort();
+  }, [date, currentDate, history.location]);
+
+
+
+  const previousHandler = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setCurrentDate(previous(currentDate));
+  };
+
+  const todayHandler = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setCurrentDate(date);
+  };
+
+  const nextHandler = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setCurrentDate(next(currentDate));
+  };
+
+  if (reservations) {
+    return (
+      <main>
+        <div>
+          <h1>Dashboard</h1>
+        </div>
+
+        <div>
+          <div>
+            <h4>Reservations for date: {currentDate} </h4>
+            <div className="">
+              <button
+                onClick={previousHandler}
+              >
+                {" "}
+                Previous Day{" "}
+              </button>
+            </div>
+            <div className="">
+              <button onClick={todayHandler}>
+                {" "}
+                Today{" "}
+              </button>
+            </div>
+            <div className="">
+              <button onClick={nextHandler}>
+                {" "}
+                Next Day{" "}
+              </button>
+            </div>
+          </div>
+        </div>
+        <ErrorAlert error={error} />
+      </main>
+    );
+  } else {
+    return (
+      <div>
+        <h4> Dashboard Loading... </h4>
       </div>
-      <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
-    </main>
-  );
+    );
+  }
 }
 
 export default Dashboard;
