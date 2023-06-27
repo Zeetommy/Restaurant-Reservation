@@ -3,7 +3,6 @@
  *
  * You will not need to make changes to this file.
  */
-hi
 require('dotenv').config();
 const path = require("path");
 
