@@ -1,13 +1,11 @@
-import React from "react";
-
-import { Redirect, Route, Switch } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
-import ReservationCreate from "../reservations/ReservationCreate";
-
-/**
+import ReservationCreate from "./reservations/ReservationCreate";
+/** 
  * Defines all the routes for the application.
  *
  * You will need to make changes to this file.
@@ -49,6 +47,5 @@ function Routes() {
     </Switch>
   );
 }
-
 
 export default Routes;
