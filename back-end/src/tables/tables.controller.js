@@ -1,8 +1,6 @@
 const service = require("./tables.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
-
-
 // ---- VALIDATION MIDDLEWARE ----
 
 function hasData(req, res, next) {
@@ -12,7 +10,7 @@ function hasData(req, res, next) {
   next({
     status: 400,
     message: "Body must have a data property.",
-  })
+  });
 }
 
 function hasReservationID(req, res, next) {
@@ -23,7 +21,7 @@ function hasReservationID(req, res, next) {
   next({
     status: 400,
     message: "reservation_id required",
-  })
+  });
 }
 
 function hasTableName(req, res, next) {
@@ -34,7 +32,7 @@ function hasTableName(req, res, next) {
   next({
     status: 400,
     message: "table_name property required",
-  })
+  });
 }
 
 function validTableName(req, res, next) {
@@ -45,7 +43,7 @@ function validTableName(req, res, next) {
   next({
     status: 400,
     message: "table_name must be longer than 2 characters.",
-  })
+  });
 }
 
 function hasTableCapacity(req, res, next) {
@@ -56,7 +54,7 @@ function hasTableCapacity(req, res, next) {
   next({
     status: 400,
     message: "table capacity property required",
-  })
+  });
 }
 
 function validTableCapacity(req, res, next) {
@@ -67,9 +65,19 @@ function validTableCapacity(req, res, next) {
   next({
     status: 400,
     message: "Table must seat at least 1 person.",
-  })
+  });
 }
 
+function isCapacityANumber(req, res, next) {
+  const capacity = req.body.data.capacity
+  if(typeof capacity === "number"){
+    return next()
+  }
+  next({
+    status: 400,
+    message: "capacity has to be a number."
+  })
+}
 async function tableExists(req, res, next) {
   const table_id = req.params.table_id;
   const table = await service.readTable(table_id);
@@ -80,11 +88,13 @@ async function tableExists(req, res, next) {
   next({
     status: 404,
     message: `table_id ${table_id} does not exist`,
-  })
+  });
 }
 
 async function reservationExists(req, res, next) {
-  const reservation = await service.readReservation(req.body.data.reservation_id);
+  const reservation = await service.readReservation(
+    req.body.data.reservation_id
+  );
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
@@ -92,7 +102,7 @@ async function reservationExists(req, res, next) {
   next({
     status: 404,
     message: `reservation_id ${req.body.data.reservation_id} does not exist`,
-  })
+  });
 }
 
 async function reservationSeated(req, res, next) {
@@ -103,7 +113,7 @@ async function reservationSeated(req, res, next) {
   next({
     status: 400,
     message: "reservation_id is already seated",
-  })
+  });
 }
 
 function tableOpen(req, res, next) {
@@ -114,18 +124,18 @@ function tableOpen(req, res, next) {
   next({
     status: 400,
     message: `table_id is occupied`,
-  })
+  });
 }
 
 function tableNotOpen(req, res, next) {
   const table = res.locals.table;
-  if (table.table_status === 'occupied') {
+  if (table.table_status === "occupied") {
     return next();
   }
   next({
     status: 400,
     message: "table_id is not occupied",
-  })
+  });
 }
 
 async function hasEnoughSeats(req, res, next) {
@@ -134,11 +144,10 @@ async function hasEnoughSeats(req, res, next) {
     next({
       status: 400,
       message: "table capacity is smaller than reservation size",
-    })  
+    });
   }
-  return next();  
+  return next();
 }
-
 
 // ----- CRUD FUNCTIONS ------
 async function list(req, res) {
@@ -159,15 +168,18 @@ async function create(req, res) {
 
 async function updateSeatRes(req, res) {
   const { reservation, table } = res.locals;
-  const data = await service.updateSeatRes(reservation.reservation_id, table.table_id);
-  res.json({ data })
+  const data = await service.updateSeatRes(
+    reservation.reservation_id,
+    table.table_id
+  );
+  res.json({ data });
 }
 
 async function destroy(req, res) {
   const table = res.locals.table;
   await service.destroyTableRes(table.table_id, table.reservation_id);
   const data = await service.list();
-  res.json({data});
+  res.json({ data });
 }
 
 module.exports = {
@@ -177,6 +189,7 @@ module.exports = {
     hasTableName,
     validTableName,
     hasTableCapacity,
+    isCapacityANumber,
     validTableCapacity,
     asyncErrorBoundary(create),
   ],
@@ -196,4 +209,4 @@ module.exports = {
     tableNotOpen,
     asyncErrorBoundary(destroy),
   ],
-}
+};
