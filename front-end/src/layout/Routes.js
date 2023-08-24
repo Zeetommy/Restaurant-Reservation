@@ -5,7 +5,8 @@ import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import ReservationCreate from "./reservations/ReservationCreate";
-/** 
+
+/**
  * Defines all the routes for the application.
  *
  * You will need to make changes to this file.

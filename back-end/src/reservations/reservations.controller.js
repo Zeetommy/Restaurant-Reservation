@@ -193,7 +193,6 @@ function notFinished(req, res, next) {
   }
 }
 
- 
 async function list(req, res) {
   const { date, currentDate, mobile_number } = req.query;
   if (date) {

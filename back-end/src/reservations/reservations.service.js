@@ -2,20 +2,24 @@ const { KnexTimeoutError } = require("knex");
 const knex = require("../db/connection");
 
 function list() {
-  return knex("reservations")
-    .select("*")
-    // .whereNot({ status: "finished" })
-    // .andWhereNot({ status: "cancelled" })
-    .orderBy("reservation_time");
+  return (
+    knex("reservations")
+      .select("*")
+      // .whereNot({ status: "finished" })
+      // .andWhereNot({ status: "cancelled" })
+      .orderBy("reservation_time")
+  );
 }
 
 function listByDate(reservation_date) {
-  return knex("reservations")
-    .select("*")
-    .where({ reservation_date })
-    // .whereNot({ status: "finished" })
-    // .andWhereNot({ status: "cancelled" })
-    .orderBy("reservation_time");
+  return (
+    knex("reservations")
+      .select("*")
+      .where({ reservation_date })
+      .whereNot({ status: "finished" })
+      // .andWhereNot({ status: "cancelled" })
+      .orderBy("reservation_time")
+  );
 }
 
 function listByPhone(mobile_number) {
@@ -46,11 +50,9 @@ function create(newReservation) {
 }
 
 async function updateStatus(reservation_id, status) {
-  return (
-    knex("reservations")
-      .where({ reservation_id })
-      .update({ status: status }, "*")
-  );
+  return knex("reservations")
+    .where({ reservation_id })
+    .update({ status: status }, "*");
 }
 
 async function updateReservation(reservation) {

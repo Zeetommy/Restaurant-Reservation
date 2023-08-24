@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
+import { listReservations } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
@@ -12,8 +12,6 @@ function Dashboard({ date }) {
 
   const history = useHistory();
 
- 
-  
   // useEffect's to load reservations and tables
 
   useEffect(() => {
@@ -41,8 +39,6 @@ function Dashboard({ date }) {
     loadReservations();
     return () => abortController.abort();
   }, [date, currentDate, history.location]);
-
-
 
   const previousHandler = (event) => {
     event.preventDefault();
@@ -73,24 +69,13 @@ function Dashboard({ date }) {
           <div>
             <h4>Reservations for date: {currentDate} </h4>
             <div className="">
-              <button
-                onClick={previousHandler}
-              >
-                {" "}
-                Previous Day{" "}
-              </button>
+              <button onClick={previousHandler}> Previous Day </button>
             </div>
             <div className="">
-              <button onClick={todayHandler}>
-                {" "}
-                Today{" "}
-              </button>
+              <button onClick={todayHandler}> Today </button>
             </div>
             <div className="">
-              <button onClick={nextHandler}>
-                {" "}
-                Next Day{" "}
-              </button>
+              <button onClick={nextHandler}> Next Day </button>
             </div>
           </div>
         </div>
