@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { updateResStatus } from "../../utils/api";
+import { updateResStatus, listTables } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 function ReservationDetail({ res }) {
@@ -18,6 +18,7 @@ function ReservationDetail({ res }) {
     ) {
       updateResStatus({ status: "cancelled" }, reservation.reservation_id)
         .then(() => {
+          listTables();
           history.push("/dashboard");
         })
         .catch(setError);

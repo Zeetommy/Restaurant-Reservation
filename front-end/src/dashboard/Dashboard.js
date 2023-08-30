@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { listReservations, listTables } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
-import { useHistory } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import ReservationDetail from "../layout/reservations/ReservationDetail";
 import TableDetail from "../layout/tables/TableDetail";
 
@@ -14,6 +14,8 @@ function Dashboard({ date }) {
   const [error, setError] = useState(null);
 
   const history = useHistory();
+  const location = useLocation();
+  const searchedDate = location.search.slice(-10);
 
   // function to know when to toggle column with clear tables button
 
@@ -71,6 +73,11 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }, [history, date, currentDate]);
 
+  useEffect(() => {
+    if (searchedDate && searchedDate !== "") {
+      setCurrentDate(searchedDate);
+    }
+  }, [searchedDate, history]);
 
   // change day handlers
 
