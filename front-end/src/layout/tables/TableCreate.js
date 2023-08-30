@@ -12,10 +12,20 @@ function TableCreate() {
   });
 
   const handleChange = ({ target }) => {
-    setTable({
-      ...table,
-      [target.name]: target.value,
-    });
+    if (target.name === "capacity") {
+      const numericValue = parseFloat(target.value); // Parse as a floating-point number
+      if (!isNaN(numericValue)) {
+        setTable({
+          ...table,
+          [target.name]: numericValue,
+        });
+      }
+    } else {
+      setTable({
+        ...table,
+        [target.name]: target.value,
+      });
+    }
   };
 
   async function handleSubmit(event) {
