@@ -6,7 +6,13 @@ import ErrorAlert from "../ErrorAlert";
 function ReservationEdit({ date }) {
   const { reservation_id } = useParams();
   const [currentReservation, setCurrentReservation] = useState({
-    reservation_id,
+    reservation_id: "",
+    first_name: "",
+    last_name: "",
+    mobile_number: "",
+    people: "",
+    reservation_date: "",
+    reservation_time: "",
   });
   const [error, setError] = useState(null);
   const history = useHistory();
