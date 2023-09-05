@@ -8,27 +8,27 @@ function ReservationDetail({ res }) {
   const [error, setError] = useState(null);
   const history = useHistory();
 
-   const handleCancelRes = (event) => {
-     event.preventDefault();
-     setError(null);
-     if (
-       window.confirm(
-         "Do you want to cancel this reservation? This cannot be undone."
-       )
-     ) {
-       console.log("Clicked OK in confirmation dialog");
-       updateResStatus({ status: "cancelled" }, reservation.reservation_id)
-         .then(() => {
-           console.log("Reservation cancelled successfully");
-           listTables();
-           history.push("/dashboard");
-         })
-         .catch((error) => {
-           console.log("Error cancelling reservation:", error);
-           setError(error);
-         });
-     }
-   };
+  const handleCancelRes = (event) => {
+    event.preventDefault();
+    setError(null);
+    if (
+      window.confirm(
+        "Do you want to cancel this reservation? This cannot be undone."
+      )
+    ) {
+      console.log("Clicked OK in confirmation dialog");
+      updateResStatus({ status: "cancelled" }, reservation.reservation_id)
+        .then(() => {
+          console.log("Reservation cancelled successfully");
+          listTables();
+          history.push("/dashboard");
+        })
+        .catch((error) => {
+          console.log("Error cancelling reservation:", error);
+          setError(error);
+        });
+    }
+  };
 
   useEffect(() => {
     setReservation(reservation);
