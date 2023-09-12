@@ -39,15 +39,18 @@ function TableDetail({ table }) {
         "Is this table ready to seat new guests? This cannot be undone."
       )
     ) {
-      await updateResStatus(
-        { status: "finished" },
-        currentTable.reservation_id,
-        abortController.signal
-      );
-      const newTable = await clearAndLoadTables();
-      console.log(newTable);
-      history.push("/tables");
-      return;
+      try {
+        await updateResStatus(
+          { status: "finished" },
+          currentTable.reservation_id,
+          abortController.signal
+        );
+        const newTable = await clearAndLoadTables();
+        console.log(newTable);
+        history.push("/tables");
+      } catch (error) {
+        setError(error.message || "An error occurred.");
+      }
     }
   }
 

@@ -16,17 +16,12 @@ function ReservationDetail({ res }) {
         "Do you want to cancel this reservation? This cannot be undone."
       )
     ) {
-      console.log("Clicked OK in confirmation dialog");
       updateResStatus({ status: "cancelled" }, reservation.reservation_id)
         .then(() => {
-          console.log("Reservation cancelled successfully");
           listTables();
           history.push("/dashboard");
         })
-        .catch((error) => {
-          console.log("Error cancelling reservation:", error);
-          setError(error);
-        });
+        .catch(setError);
     }
   };
 
@@ -54,18 +49,14 @@ function ReservationDetail({ res }) {
             <a href={`/reservations/${reservation.reservation_id}/seat`}>
               <button className="btn btn-primary"> Seat </button>
             </a>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </td>
         <td>
           {reservation.status === "booked" ? (
             <a href={`/reservations/${reservation.reservation_id}/edit`}>
               <button className="btn btn-primary "> Edit </button>
             </a>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </td>
         <td data-reservation-id-cancel={reservation.reservation_id}>
           {reservation.status === "booked" ? (
@@ -73,9 +64,7 @@ function ReservationDetail({ res }) {
               {" "}
               Cancel{" "}
             </button>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </td>
       </tr>
     </>

@@ -12,18 +12,15 @@ function ReservationSearch() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setError(null); 
+    setError(null);
     listReservations({ mobile_number })
       .then((response) => {
-        if (response.length === 0) {
-          setError("No reservations found");
-        } else {
-          setReservations(response);
-        }
+        setReservations(response);
         history.push("/search");
       })
-      .catch(() => setError("No reservations found"));
+      .catch(setError("No reservations found"));
   };
+
   return (
     <>
       <div className="mb-3">
@@ -52,20 +49,18 @@ function ReservationSearch() {
           <h3 className="mb-3"> Matching Reservations </h3>
           <table className="table table-striped">
             <thead>
-              <tr>
-                <th scope="col"> Reservation ID </th>
-                <th scope="col"> First Name </th>
-                <th scope="col"> Last Name </th>
-                <th scope="col"> Party Size </th>
-                <th scope="col"> Phone Number </th>
-                <th scope="col"> Reservation Date </th>
-                <th scope="col"> Reservation Time </th>
-                <th scope="col"> Reservation Status </th>
-              </tr>
+              <th scope="col"> Reservation ID </th>
+              <th scope="col"> First Name </th>
+              <th scope="col"> Last Name </th>
+              <th scope="col"> Party Size </th>
+              <th scope="col"> Phone Number </th>
+              <th scope="col"> Reservation Date </th>
+              <th scope="col"> Reservation Time </th>
+              <th scope="col"> Reservation Status </th>
             </thead>
             <tbody>
               {reservations.map((res) => (
-                <ReservationDetail key={res.reservation_id} res={res} />
+                <ReservationDetail res={res} />
               ))}
             </tbody>
           </table>
