@@ -75,9 +75,7 @@ function TableDetail({ table }) {
             >
               Finish
             </button>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </td>
       </tr>
     </>

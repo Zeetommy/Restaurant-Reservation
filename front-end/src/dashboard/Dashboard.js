@@ -154,7 +154,9 @@ function Dashboard({ date }) {
             </thead>
             <tbody>
               {reservations.map((res) => (
-                <ReservationDetail res={res} key={res.reservation_id} />
+                <tr key={res.reservation_id}>
+                  <ReservationDetail res={res} />
+                </tr>
               ))}
             </tbody>
           </table>
