@@ -4,7 +4,10 @@ import { getReservation, updateReservation } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 function ReservationEdit({ date }) {
+  // Extract reservation_id from the route parameters
   const { reservation_id } = useParams();
+
+  // Define initial state and error state using destructuring
   const [currentReservation, setCurrentReservation] = useState({
     reservation_id,
     first_name: "",
@@ -15,9 +18,12 @@ function ReservationEdit({ date }) {
     reservation_time: "",
   });
   const [error, setError] = useState(null);
+
+  // Access the history object
   const history = useHistory();
 
   useEffect(() => {
+    // Fetch the reservation data when the component mounts
     getReservation(reservation_id)
       .then((response) => {
         setCurrentReservation({
@@ -28,6 +34,7 @@ function ReservationEdit({ date }) {
       .catch(setError);
   }, [reservation_id]);
 
+  // Define a handleChange function for input changes
   const handleChange = ({ target }) => {
     setCurrentReservation({
       ...currentReservation,
@@ -35,17 +42,24 @@ function ReservationEdit({ date }) {
     });
   };
 
+  // Define a handleSubmit function for form submission
   const handleSubmit = (event) => {
     event.preventDefault();
-    updateReservation({
+
+    // Ensure that people is a number before submitting
+    const updatedReservation = {
       ...currentReservation,
       people: Number(currentReservation.people),
-    })
+    };
+
+    // Send the updated reservation data to the server
+    updateReservation(updatedReservation)
       .then((response) => {
         setCurrentReservation({ ...response });
+
+        // Redirect to the dashboard with the updated date parameter
         history.push(`/dashboard?date=${currentReservation.reservation_date}`);
       })
-
       .catch(setError);
   };
 
@@ -54,124 +68,75 @@ function ReservationEdit({ date }) {
       <h1> Edit Reservation: {reservation_id} </h1>
       <ErrorAlert error={error} />
       <form onSubmit={handleSubmit} className="form-group">
-        <div className="row mb-3">
-          <div className="col-4 form-group">
-            <label className="form-label" htmlFor="first_name">
-              First Name
-            </label>
-            <input
-              className="form-control"
-              id="first_name"
-              name="first_name"
-              type="text"
-              onChange={handleChange}
-              required={true}
-              placeholder={currentReservation.first_name}
-              value={currentReservation.first_name}
-            />
-            <small className="form-text text-muted"> Enter First Name </small>
+        {/* Input fields with labels */}
+        {/* You can use a map function for repetitive input fields to make the code more concise */}
+        {[
+          {
+            label: "First Name",
+            name: "first_name",
+            placeholder: currentReservation.first_name,
+          },
+          {
+            label: "Last Name",
+            name: "last_name",
+            placeholder: currentReservation.last_name,
+          },
+          {
+            label: "Mobile Number",
+            name: "mobile_number",
+            placeholder: currentReservation.mobile_number,
+          },
+          {
+            label: "Party Size",
+            name: "people",
+            placeholder: currentReservation.people,
+            type: "number",
+          },
+          {
+            label: "Reservation Date",
+            name: "reservation_date",
+            placeholder: currentReservation.reservation_date,
+            type: "date",
+          },
+          {
+            label: "Reservation Time",
+            name: "reservation_time",
+            placeholder: currentReservation.reservation_time,
+            type: "time",
+          },
+        ].map((inputField) => (
+          <div className="row mb-3" key={inputField.name}>
+            <div className="col-4 form-group">
+              <label className="form-label" htmlFor={inputField.name}>
+                {inputField.label}
+              </label>
+              <input
+                className="form-control"
+                id={inputField.name}
+                name={inputField.name}
+                type={inputField.type || "text"} // Use type attribute if provided
+                onChange={handleChange}
+                required={true}
+                placeholder={inputField.placeholder}
+                value={currentReservation[inputField.name]}
+              />
+              <small className="form-text text-muted">
+                Enter {inputField.label}
+              </small>
+            </div>
           </div>
-          <div className="col-4">
-            <label className="form-label" htmlFor="last_name">
-              Last Name
-            </label>
-            <input
-              className="form-control"
-              id="last_name"
-              name="last_name"
-              type="text"
-              onChange={handleChange}
-              required={true}
-              placeholder={currentReservation.last_name}
-              value={currentReservation.last_name}
-            />
-            <small className="form-text text-muted"> Enter Last Name </small>
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-4 form-group">
-            <label className="form-label" htmlFor="mobile_number">
-              Mobile Number
-            </label>
-            <input
-              className="form-control"
-              id="mobile_number"
-              name="mobile_number"
-              type="text"
-              onChange={handleChange}
-              required={true}
-              placeholder={currentReservation.mobile_number}
-              value={currentReservation.mobile_number}
-            />
-            <small className="form-text text-muted">
-              {" "}
-              Enter Mobile Number{" "}
-            </small>
-          </div>
-          <div className="col-4 form-group">
-            <label className="form-label" htmlFor="mobile_number">
-              Party Size
-            </label>
-            <input
-              className="form-control"
-              id="people"
-              name="people"
-              type="number"
-              onChange={handleChange}
-              required={true}
-              placeholder={currentReservation.people}
-              value={currentReservation.people}
-            />
-            <small className="form-text text-muted"> Enter Party Size </small>
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col-4 form-group">
-            <label>Reservation Date</label>
-            <input
-              className="form-control"
-              id="reservation_date"
-              name="reservation_date"
-              type="date"
-              onChange={handleChange}
-              required={true}
-              placeholder={currentReservation.reservation_date}
-              value={currentReservation.reservation_date}
-            />
-            <small className="form-text text-muted">
-              {" "}
-              Enter Reservation Date (Closed on Tuesdays){" "}
-            </small>
-          </div>
-          <div className="col-4 form-group">
-            <label>Reservation Time</label>
-            <input
-              className="form-control"
-              id="reservation_time"
-              name="reservation_time"
-              type="time"
-              onChange={handleChange}
-              required={true}
-              placeholder={currentReservation.reservation_time}
-              value={currentReservation.reservation_time}
-            />
-            <small className="form-text text-muted">
-              {" "}
-              Enter Reservation Time{" "}
-            </small>
-          </div>
-        </div>
+        ))}
+
+        {/* Cancel and Submit buttons */}
         <button
           type="button"
           className="btn btn-secondary mr-2"
           onClick={() => history.goBack()}
         >
-          {" "}
-          Cancel{" "}
+          Cancel
         </button>
         <button type="submit" className="btn btn-primary">
-          {" "}
-          Submit Edit{" "}
+          Submit Edit
         </button>
       </form>
     </>

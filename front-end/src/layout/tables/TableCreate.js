@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { createTable } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
@@ -29,14 +29,13 @@ function TableCreate() {
 
   return (
     <main>
-      <h1> Create A Table </h1>
+      <h1>Create A Table</h1>
       <ErrorAlert error={error} />
       <form onSubmit={handleSubmit} className="form-group">
         <div className="row mb-3">
           <div className="col-4 form-group">
             <label className="form-label" htmlFor="table_name">
-              {" "}
-              Table Name{" "}
+              Table Name
             </label>
             <input
               className="form-control"
@@ -47,26 +46,22 @@ function TableCreate() {
               onChange={handleChange}
               value={table.table_name}
             />
-            <small className="form-text text-muted"> Enter Table Name </small>
+            <small className="form-text text-muted">Enter Table Name</small>
           </div>
           <div className="col-4 form-group">
             <label className="form-label" htmlFor="capacity">
-              {" "}
-              Table Capacity{" "}
+              Table Capacity
             </label>
             <input
               className="form-control"
               name="capacity"
               id="capacity"
               required={true}
-              type="text"
+              type="number"
               onChange={handleChange}
               value={table.capacity}
             />
-            <small className="form-text text-muted">
-              {" "}
-              Enter Table Capacity{" "}
-            </small>
+            <small className="form-text text-muted">Enter Table Capacity</small>
           </div>
         </div>
         <button
