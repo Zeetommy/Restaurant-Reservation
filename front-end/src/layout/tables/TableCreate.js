@@ -8,24 +8,39 @@ function TableCreate() {
   const history = useHistory();
   const [table, setTable] = useState({
     table_name: "",
-    capacity: "",
+    capacity: 0,
   });
 
   const handleChange = ({ target }) => {
-    setTable({
-      ...table,
-      [target.name]: target.value,
-    });
+    const { name, value } = target;
+
+    if (name === "capacity" && isNaN(value)) {
+      setError("Capacity must be a number.");
+    } else {
+      setTable({
+        ...table,
+        [name]: value,
+      });
+      setError(null);
+    }
   };
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    createTable(table)
-      .then(() => {
-        history.push(`/dashboard`);
-      })
-      .catch(setError);
-  }
+    const numericCapacity = parseFloat(table.capacity);
+    if (isNaN(numericCapacity)) {
+      setError("Capacity must be a number.");
+      return;
+    }
+
+    const tableData = { ...table, capacity: numericCapacity };
+    try {
+      await createTable(tableData);
+      history.push("/dashboard");
+    } catch (error) {
+      setError(error);
+    }
+  };
 
   return (
     <main>

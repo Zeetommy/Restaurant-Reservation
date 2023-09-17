@@ -16,7 +16,7 @@ function ReservationSeat() {
     listTables().then(setTables).catch(setError);
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!selectedTable) {
@@ -24,19 +24,17 @@ function ReservationSeat() {
       return;
     }
 
-    // Convert the selectedTable to a JavaScript object
-    const tableObj = JSON.parse(selectedTable);
-
-    // Update the reservation's seat to the selected table
-    updateSeat(tableObj.table_id, reservation_id)
-      .then((response) => {
-        const updatedTables = tables.map((table) => {
-          return table.table_id === response.table_id ? response : table;
-        });
-        setTables(updatedTables);
-        history.push("/dashboard");
-      })
-      .catch(setError);
+    try {
+      const tableObj = JSON.parse(selectedTable);
+      const response = await updateSeat(tableObj.table_id, reservation_id);
+      const updatedTables = tables.map((table) =>
+        table.table_id === response.table_id ? response : table
+      );
+      setTables(updatedTables);
+      history.push("/dashboard");
+    } catch (error) {
+      setError("An error occurred while seating the reservation.");
+    }
   };
 
   return (
