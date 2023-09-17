@@ -17,10 +17,10 @@ function ReservationCreate({ date }) {
   });
 
   const handleChange = ({ target }) => {
-    setReservation({
-      ...reservation,
+    setReservation((prevReservation) => ({
+      ...prevReservation,
       [target.name]: target.value,
-    });
+    }));
   };
 
   function handleSubmit(event) {
@@ -147,8 +147,7 @@ function ReservationCreate({ date }) {
           onClick={() => history.goBack()}
           className="btn btn-secondary mr-2"
         >
-          {" "}
-          Cancel{" "}
+          Cancel
         </button>
         <button type="submit" className="btn btn-primary">
           {" "}
