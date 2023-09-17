@@ -10,16 +10,27 @@ function ReservationSearch() {
   const history = useHistory();
   const [error, setError] = useState("No reservations found");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setError(null);
-    listReservations({ mobile_number })
-      .then((response) => {
+const handleSubmit = (event) => {
+  event.preventDefault();
+  setError(null);
+  listReservations({ mobile_number })
+    .then((response) => {
+      if (response.length === 0) {
+        setError("No reservations found for the entered phone number.");
+      } else {
         setReservations(response);
         history.push("/search");
-      })
-      .catch(() => setError("No reservations found"));
-  };
+      }
+    })
+    .catch((error) => {
+      if (error.message === "No reservations found") {
+        setError("No reservations found for the entered phone number.");
+      } else {
+        setError("An error occurred while fetching reservations.");
+      }
+    });
+};
+
 
   return (
     <>
