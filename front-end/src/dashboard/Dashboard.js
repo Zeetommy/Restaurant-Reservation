@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
+import { listReservations, listTables, updateResStatus } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import { useLocation, useHistory } from "react-router-dom";
 import ReservationDetail from "../layout/reservations/ReservationDetail";
 import TableDetail from "../layout/tables/TableDetail";
 import ErrorAlert from "../layout/ErrorAlert";
-
 
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
@@ -80,6 +79,20 @@ function Dashboard({ date }) {
     }
   }, [searchedDate, history]);
 
+  const handleCancelReservation = async (reservationId) => {
+    try {
+      await updateResStatus({ status: "cancelled" }, reservationId);
+      setReservations((prevReservations) =>
+        prevReservations.filter((res) => res.reservation_id !== reservationId)
+      );
+      listTables();
+      history.push("/dashboard");
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+
   // change day handlers
 
   const previousHandler = (event) => {
@@ -151,7 +164,11 @@ function Dashboard({ date }) {
           </thead>
           <tbody>
             {reservations.map((res) => (
-              <ReservationDetail res={res} key={res.reservation_id} />
+              <ReservationDetail
+                res={res}
+                key={res.reservation_id}
+                onCancel={() => handleCancelReservation(res.reservation_id)} // Pass onCancel prop
+              />
             ))}
           </tbody>
         </table>

@@ -32,7 +32,11 @@ describe("US-03 - Create reservation on a future, working date - E2E", () => {
   });
 
   describe("/reservations/new page", () => {
-    beforeEach(async () => {
+    beforeEach(async () => { 
+      await page.waitForSelector("input[name=first_name]", {
+        visible: true,
+        timeout: 60000,
+      });
       await page.type("input[name=first_name]", "John");
       await page.type("input[name=last_name]", "Doe");
       await page.type("input[name=mobile_number]", "1234567890");
@@ -40,12 +44,14 @@ describe("US-03 - Create reservation on a future, working date - E2E", () => {
     });
 
     test("displays an error message if reservation time is before 10:30 AM", async () => {
+     
       await page.type("input[name=reservation_date]", "02022035");
       await page.type("input[name=reservation_time]", "10:15AM");
 
       await page.screenshot({
-        path: ".screenshots/us-02-reservation-too-early-before.png",
+        path: ".screenshots/us-02-reservation-too-early-before-after-typing.png",
       });
+      
 
       await page.click("button[type=submit]");
 

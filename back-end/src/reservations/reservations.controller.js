@@ -171,7 +171,7 @@ function hasValidPeople(req, res, next) {
 }
 
 function updateValidStatus(req, res, next) {
-  const status = req.body.data.status;
+  const status = req.body.status;
   if (status !== "unknown") {
     return next();
   }
@@ -229,7 +229,7 @@ async function updateReservation(req, res) {
 }
 
 async function updateStatus(req, res) {
-  const status = req.body.data.status;
+  const status = req.body.status;
   const reservation = res.locals.reservation;
   let result = await service.updateStatus(reservation.reservation_id, status);
   res.status(200).json({ data: { status: result[0].status } });

@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import {
-  deleteTableReservation,
-  listTables,
-  updateResStatus,
-} from "../../utils/api";
 import { useHistory } from "react-router-dom";
+import { deleteTableReservation, listTables } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 function TableDetail({ table }) {
@@ -30,23 +26,17 @@ function TableDetail({ table }) {
     }
   }
 
-  async function handleClear(event) {
-    const abortController = new AbortController();
+  async function handleFinishClick(event) {
     event.preventDefault();
     setError(null);
-    if (
-      window.confirm(
-        "Is this table ready to seat new guests? This cannot be undone."
-      )
-    ) {
+
+    const confirmation = window.confirm(
+      "Is this table ready to seat new guests? This cannot be undone."
+    );
+
+    if (confirmation) {
       try {
-        await updateResStatus(
-          { status: "finished" },
-          currentTable.reservation_id,
-          abortController.signal
-        );
-        const newTable = await clearAndLoadTables();
-        console.log(newTable);
+        await clearAndLoadTables();
         history.push("/tables");
       } catch (error) {
         setError(error.message || "An error occurred.");
@@ -70,7 +60,7 @@ function TableDetail({ table }) {
           {currentTable.reservation_id ? (
             <button
               className="btn btn-danger"
-              onClick={handleClear}
+              onClick={handleFinishClick}
               data-table-id-finish={`${table.table_id}`}
             >
               Finish
